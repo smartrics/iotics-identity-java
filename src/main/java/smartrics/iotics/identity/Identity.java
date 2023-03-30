@@ -35,7 +35,11 @@ public final class Identity {
 
     @Override
     public String toString() {
-        return "Identity{" + "name='" + name + '\'' + ", keyName='" + keyName + '\'' + ", did='" + did + '\'' + '}';
+        return "Identity{" +
+                "name='" + name + '\'' +
+                ", keyName='" + keyName + '\'' +
+                ", did='" + did + '\'' +
+                '}';
     }
 
     public String name() {

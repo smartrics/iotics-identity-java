@@ -1,13 +1,13 @@
 package smartrics.iotics.identity;
 
+import smartrics.iotics.identity.jna.SdkApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import smartrics.iotics.identity.jna.SdkApi;
 
-import static org.mockito.Mockito.*;
 import static smartrics.iotics.identity.DataFactory.validResult;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SeedsTest {

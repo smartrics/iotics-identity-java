@@ -1,19 +1,27 @@
 package smartrics.iotics.identity;
 
 import smartrics.iotics.identity.jna.SdkApi;
+import smartrics.iotics.identity.resolver.HttpResolverClient;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
 
+import static smartrics.iotics.identity.Validator.getValueOrThrow;
+import static smartrics.iotics.identity.Validator.throwIfNotNull;
+
 /**
  * Simpler and more java friendly interface to access IOTICS' identity library functions.
+ * Wrapper class to manage identities via the identity library.
  */
 public class SimpleIdentity {
     private final SdkApi api;
     private final String userSeed;
     private final String agentSeed;
-    private final String resolverAddress;
+    private final URL resolverAddress;
+    private final HttpResolverClient resolverClient;
 
     /**
      * Abstraction over the library interface with added validation and high level data bags. This abstraction provides
@@ -22,7 +30,7 @@ public class SimpleIdentity {
      * @param resolverAddress
      */
     public SimpleIdentity(SdkApi api, String resolverAddress) {
-        this(api, resolverAddress, Validator.getValueOrThrow(api.CreateDefaultSeed()));
+        this(api, resolverAddress, getValueOrThrow(api.CreateDefaultSeed()));
     }
 
     public SimpleIdentity(SdkApi api, String resolverAddress, String seed) {
@@ -39,7 +47,12 @@ public class SimpleIdentity {
         this.api = Objects.requireNonNull(api);
         this.userSeed = Objects.requireNonNull(userSeed);
         this.agentSeed = Objects.requireNonNull(agentSeed);
-        this.resolverAddress = URI.create(resolverAddress).toString();
+        try {
+            this.resolverAddress = URI.create(resolverAddress).toURL();
+            this.resolverClient = new HttpResolverClient(this.resolverAddress);
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("resolver address not a valid URL: " + resolverAddress);
+        }
     }
 
     /**
@@ -49,7 +62,7 @@ public class SimpleIdentity {
      * @return the identity data
      */
     public Identity CreateAgentIdentity(String keyName, String name) {
-        String did = Validator.getValueOrThrow(api.CreateAgentIdentity(resolverAddress, keyName, name, agentSeed));
+        String did = getValueOrThrow(api.CreateAgentIdentity(resolverAddress.toString(), keyName, name, agentSeed));
         return new Identity(keyName, name, did);
     }
 
@@ -60,7 +73,7 @@ public class SimpleIdentity {
      * @return the identity data
      */
     public Identity RecreateAgentIdentity(String keyName, String name) {
-        String did = Validator.getValueOrThrow(api.RecreateAgentIdentity(resolverAddress, keyName, name, agentSeed));
+        String did = getValueOrThrow(api.RecreateAgentIdentity(resolverAddress.toString(), keyName, name, agentSeed));
         return new Identity(keyName, name, did);
     }
 
@@ -71,7 +84,7 @@ public class SimpleIdentity {
      * @return the identity data
      */
     public Identity CreateUserIdentity(String keyName, String name) {
-        String did = Validator.getValueOrThrow(api.CreateUserIdentity(resolverAddress, keyName, name, userSeed));
+        String did = getValueOrThrow(api.CreateUserIdentity(resolverAddress.toString(), keyName, name, userSeed));
         return new Identity(keyName, name, did);
     }
 
@@ -82,7 +95,7 @@ public class SimpleIdentity {
      * @return the identity data
      */
     public Identity RecreateUserIdentity(String keyName, String name) {
-        String did = Validator.getValueOrThrow(api.RecreateUserIdentity(resolverAddress, keyName, name, userSeed));
+        String did = getValueOrThrow(api.RecreateUserIdentity(resolverAddress.toString(), keyName, name, userSeed));
         return new Identity(keyName, name, did);
     }
 
@@ -94,7 +107,7 @@ public class SimpleIdentity {
      * @return the new twin identity
      */
     public Identity CreateTwinIdentityWithControlDelegation(Identity agentIdentity, String twinKeyName, String twinName) {
-        String did = Validator.getValueOrThrow(api.CreateTwinDidWithControlDelegation(resolverAddress,
+        String did = getValueOrThrow(api.CreateTwinDidWithControlDelegation(resolverAddress.toString(),
                 agentIdentity.did(), agentIdentity.keyName(), agentIdentity.name(), agentSeed, twinKeyName, twinName));
         return new Identity(twinKeyName, twinName, did);
     }
@@ -107,7 +120,7 @@ public class SimpleIdentity {
      * @return JWT token usable as claim for this agent
      */
     public String CreateAgentAuthToken(Identity agentIdentity, String userDid, String audience, Duration duration) {
-        return Validator.getValueOrThrow(api.CreateAgentAuthToken(
+        return getValueOrThrow(api.CreateAgentAuthToken(
                 agentIdentity.did(), agentIdentity.keyName(), agentIdentity.name(), agentSeed, userDid, audience, duration.toSeconds()));
     }
 
@@ -120,20 +133,20 @@ public class SimpleIdentity {
      * @return JWT token usable as claim for this agent
      */
     public String CreateAgentAuthToken(Identity agentIdentity, String userDid, Duration duration) {
-        return CreateAgentAuthToken(agentIdentity, userDid, resolverAddress, duration);
+        return CreateAgentAuthToken(agentIdentity, userDid, resolverAddress.toString(), duration);
     }
 
     public String RecreateAgentAuthToken(Identity agentIdentity, String userDid, String audience, Duration duration) {
-        return Validator.getValueOrThrow(api.CreateAgentAuthToken(
+        return getValueOrThrow(api.CreateAgentAuthToken(
                 agentIdentity.did(), agentIdentity.keyName(), agentIdentity.name(), agentSeed, userDid, audience, duration.toSeconds()));
     }
 
     public String RecreateAgentAuthToken(Identity agentIdentity, String userDid, Duration duration) {
-        return CreateAgentAuthToken(agentIdentity, userDid, resolverAddress, duration);
+        return CreateAgentAuthToken(agentIdentity, userDid, resolverAddress.toString(), duration);
     }
 
     public String IsAllowedFor(String resolverAddress, String token) {
-        return Validator.getValueOrThrow(api.IsAllowedFor(resolverAddress, token));
+        return getValueOrThrow(api.IsAllowedFor(resolverAddress, token));
     }
 
     /**
@@ -144,7 +157,7 @@ public class SimpleIdentity {
      * @param delegationName the delegation name
      */
     public void UserDelegatesAuthenticationToAgent(Identity agentId, Identity userId, String delegationName) {
-        Validator.throwIfNotNull(api.UserDelegatesAuthenticationToAgent(resolverAddress,
+        throwIfNotNull(api.UserDelegatesAuthenticationToAgent(resolverAddress.toString(),
                 agentId.did(), agentId.keyName(), agentId.name(), agentSeed,
                 userId.did(), userId.keyName(), userId.name(), userSeed, delegationName));
 
@@ -158,7 +171,7 @@ public class SimpleIdentity {
      * @param delegationName the delegation name
      */
     public void TwinDelegatesControlToAgent(Identity agentId, Identity twinId, String delegationName) {
-        Validator.throwIfNotNull(api.TwinDelegatesControlToAgent(resolverAddress,
+        throwIfNotNull(api.TwinDelegatesControlToAgent(resolverAddress.toString(),
                 agentId.did(), agentId.keyName(), agentId.name(), agentSeed,
                 twinId.did(), twinId.keyName(), twinId.name(), agentSeed, delegationName));
     }
@@ -171,7 +184,7 @@ public class SimpleIdentity {
         return userSeed;
     }
 
-    public String getResolverAddress() {
+    public URL getResolverAddress() {
         return resolverAddress;
     }
 }

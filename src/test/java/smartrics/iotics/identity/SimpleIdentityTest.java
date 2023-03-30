@@ -1,13 +1,14 @@
 package smartrics.iotics.identity;
 
+import smartrics.iotics.identity.jna.SdkApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import smartrics.iotics.identity.jna.SdkApi;
 
 import java.time.Duration;
 
+import static smartrics.iotics.identity.DataFactory.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -20,21 +21,25 @@ public class SimpleIdentityTest {
 
     @Test
     void validApiConstruction() {
-        assertThrows(NullPointerException.class, () -> new SimpleIdentity(null, ""));
-        assertThrows(IllegalArgumentException.class, () -> new SimpleIdentity(sdkApi, "invalid url", "some seed"));
+        assertThrows(NullPointerException.class, () -> {
+            new SimpleIdentity(null, "");
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SimpleIdentity(sdkApi, "invalid url", "some seed");
+        });
     }
 
     @Test
     void whenConstructedWithoutSeed_thenGeneratesNewOne() {
-        when(sdkApi.CreateDefaultSeed()).thenReturn(DataFactory.validResult("some seed"));
-        new SimpleIdentity(sdkApi, DataFactory.validUrl());
+        when(sdkApi.CreateDefaultSeed()).thenReturn(validResult("some seed"));
+        new SimpleIdentity(sdkApi, validUrl());
 
         verify(sdkApi).CreateDefaultSeed();
     }
 
     @Test
     void whenConstructedWithOneSeed_thenUsesItForBothAgentAndUser() {
-        SimpleIdentity si = new SimpleIdentity(sdkApi, DataFactory.validUrl(), "some seed");
+        SimpleIdentity si = new SimpleIdentity(sdkApi, validUrl(), "some seed");
 
         assertEquals("some seed", si.getAgentSeed());
         assertEquals("some seed", si.getUserSeed());
@@ -44,7 +49,7 @@ public class SimpleIdentityTest {
 
     @Test
     void whenConstructedWithTwoSeed_thenUsesOneForUserAndOneForAgent() {
-        SimpleIdentity si = new SimpleIdentity(sdkApi, DataFactory.validUrl(), "user seed", "agent seed");
+        SimpleIdentity si = new SimpleIdentity(sdkApi, validUrl(), "user seed", "agent seed");
 
         assertEquals("agent seed", si.getAgentSeed());
         assertEquals("user seed", si.getUserSeed());
@@ -54,11 +59,11 @@ public class SimpleIdentityTest {
 
     @Test
     void whenCreateTwinDidWithControlDelegation_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        Identity id = DataFactory.aValidAgentIdentity();
-        when(sdkApi.CreateTwinDidWithControlDelegation(any(), any(), any(), any(), any(), any(), any())).thenReturn(DataFactory.validResult("twin did"));
+        Identity id = aValidAgentIdentity();
+        when(sdkApi.CreateTwinDidWithControlDelegation(any(), any(), any(), any(), any(), any(), any())).thenReturn(validResult("twin did"));
 
         Identity twinId = si.CreateTwinIdentityWithControlDelegation(id, "twinKeyName", "twinName");
 
@@ -70,10 +75,10 @@ public class SimpleIdentityTest {
 
     @Test
     void whenRecreateAgentIdentity_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.RecreateAgentIdentity(any(), any(), any(), any())).thenReturn(DataFactory.validResult("agent did"));
+        when(sdkApi.RecreateAgentIdentity(any(), any(), any(), any())).thenReturn(validResult("agent did"));
 
         Identity agentIdentity = si.RecreateAgentIdentity("agentKeyName", "agentName");
 
@@ -85,10 +90,10 @@ public class SimpleIdentityTest {
 
     @Test
     void whenCreateAgentIdentity_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.CreateAgentIdentity(any(), any(), any(), any())).thenReturn(DataFactory.validResult("agent did"));
+        when(sdkApi.CreateAgentIdentity(any(), any(), any(), any())).thenReturn(validResult("agent did"));
 
         Identity agentIdentity = si.CreateAgentIdentity("agentKeyName", "agentName");
 
@@ -100,10 +105,10 @@ public class SimpleIdentityTest {
 
     @Test
     void whenIsAllowedFor_thenDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.IsAllowedFor(any(), any())).thenReturn(DataFactory.validResult("true"));
+        when(sdkApi.IsAllowedFor(any(), any())).thenReturn(validResult("true"));
 
         String allowed = si.IsAllowedFor("resolver", "token");
 
@@ -113,10 +118,10 @@ public class SimpleIdentityTest {
 
     @Test
     void whenRecreateUserIdentity_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.RecreateUserIdentity(any(), any(), any(), any())).thenReturn(DataFactory.validResult("user did"));
+        when(sdkApi.RecreateUserIdentity(any(), any(), any(), any())).thenReturn(validResult("user did"));
 
         Identity userIdentity = si.RecreateUserIdentity("userKeyName", "userName");
 
@@ -128,10 +133,10 @@ public class SimpleIdentityTest {
 
     @Test
     void whenCreateUserIdentity_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.CreateUserIdentity(any(), any(), any(), any())).thenReturn(DataFactory.validResult("user did"));
+        when(sdkApi.CreateUserIdentity(any(), any(), any(), any())).thenReturn(validResult("user did"));
 
         Identity userIdentity = si.CreateUserIdentity("userKeyName", "userName");
 
@@ -143,49 +148,51 @@ public class SimpleIdentityTest {
 
     @Test
     void whenCreateUserIdentityFails_thenThrows() {
-        SimpleIdentity si = new SimpleIdentity(sdkApi, DataFactory.validUrl(), "some seed");
-        when(sdkApi.CreateUserIdentity(any(), any(), any(), any())).thenReturn(DataFactory.errorResult("some error"));
+        SimpleIdentity si = new SimpleIdentity(sdkApi, validUrl(), "some seed");
+        when(sdkApi.CreateUserIdentity(any(), any(), any(), any())).thenReturn(errorResult("some error"));
 
-        assertThrows(SimpleIdentityException.class, () -> si.CreateUserIdentity("userKeyName", "userName"));
+        assertThrows(SimpleIdentityException.class, () -> {
+            si.CreateUserIdentity("userKeyName", "userName");
+        });
     }
 
     @Test
     void whenCreateAgentAuthToken_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.CreateAgentAuthToken(any(), any(), any(), any(), any(), any(), anyLong())).thenReturn(DataFactory.validResult("some token"));
+        when(sdkApi.CreateAgentAuthToken(any(), any(), any(), any(), any(), any(), anyLong())).thenReturn(validResult("some token"));
 
-        Identity i = DataFactory.aValidAgentIdentity();
+        Identity i = aValidAgentIdentity();
         String token = si.CreateAgentAuthToken(i, "did:iotics:user", "aud", Duration.ofSeconds(123));
 
         assertEquals(token, "some token");
-        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", "aud", 123);
+        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", "aud", Integer.valueOf(123));
     }
 
     @Test
     void whenCreateAgentAuthToken_thenMapsParametersAndDelegatesToApiWithDefaultAudience() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
 
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, "some seed");
-        when(sdkApi.CreateAgentAuthToken(any(), any(), any(), any(), any(), any(), anyLong())).thenReturn(DataFactory.validResult("some token"));
+        when(sdkApi.CreateAgentAuthToken(any(), any(), any(), any(), any(), any(), anyLong())).thenReturn(validResult("some token"));
 
-        Identity i = DataFactory.aValidAgentIdentity();
+        Identity i = aValidAgentIdentity();
         String token = si.CreateAgentAuthToken(i, "did:iotics:user", Duration.ofSeconds(123));
 
         assertEquals(token, "some token");
-        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", res, 123);
+        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", res, Integer.valueOf(123));
     }
 
     @Test
     void whenUserDelegatesAuthenticationToAgent_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
         String as = "agentSeed";
         String us = "userSeed";
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, us, as);
 
-        Identity i = DataFactory.aValidAgentIdentity();
-        Identity u = DataFactory.aValidUserIdentity();
+        Identity i = aValidAgentIdentity();
+        Identity u = aValidUserIdentity();
         si.UserDelegatesAuthenticationToAgent(i, u, "#foobar");
 
         verify(sdkApi).UserDelegatesAuthenticationToAgent(res,
@@ -196,13 +203,13 @@ public class SimpleIdentityTest {
 
     @Test
     void whenTwinDelegatesControlToAgent_thenMapsParametersAndDelegatesToApi() {
-        String res = DataFactory.validUrl();
+        String res = validUrl();
         String as = "agentSeed";
         String us = "userSeed";
         SimpleIdentity si = new SimpleIdentity(sdkApi, res, us, as);
 
-        Identity i = DataFactory.aValidAgentIdentity();
-        Identity u = DataFactory.aValidUserIdentity();
+        Identity i = aValidAgentIdentity();
+        Identity u = aValidUserIdentity();
         si.TwinDelegatesControlToAgent(i, u, "#foobar");
 
         verify(sdkApi).TwinDelegatesControlToAgent(res,

@@ -4,6 +4,8 @@ import smartrics.iotics.identity.jna.SdkApi;
 
 import java.util.Objects;
 
+import static smartrics.iotics.identity.Validator.getValueOrThrow;
+
 /**
  * Seed generator delegating to the library via its interface.
  */
@@ -15,15 +17,15 @@ public class Seeds {
     }
 
     public String CreateDefaultSeed() {
-        return Validator.getValueOrThrow(api.CreateDefaultSeed());
+        return getValueOrThrow(api.CreateDefaultSeed());
     }
 
     public String MnemonicBip39ToSeed(String mnemonics) {
-        return Validator.getValueOrThrow(api.MnemonicBip39ToSeed(mnemonics));
+        return getValueOrThrow(api.MnemonicBip39ToSeed(mnemonics));
     }
 
     public String SeedBip39ToMnemonic(String seed) {
-        return Validator.getValueOrThrow(api.SeedBip39ToMnemonic(seed));
+        return getValueOrThrow(api.SeedBip39ToMnemonic(seed));
     }
 
 }
