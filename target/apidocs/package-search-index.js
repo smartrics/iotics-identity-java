@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"smartrics.iotics.identity"},{"l":"smartrics.iotics.identity.experimental"},{"l":"smartrics.iotics.identity.go"},{"l":"smartrics.iotics.identity.jna"}];updateSearchResults();

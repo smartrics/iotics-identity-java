@@ -1,0 +1,11 @@
+smartrics/iotics/identity/Validator.class
+smartrics/iotics/identity/Seeds.class
+smartrics/iotics/identity/jna/JnaSdkApiInitialiser.class
+smartrics/iotics/identity/SimpleIdentityException.class
+smartrics/iotics/identity/experimental/ResolverClient$Result.class
+smartrics/iotics/identity/SimpleIdentity.class
+smartrics/iotics/identity/experimental/ResolverClient.class
+smartrics/iotics/identity/experimental/JWT.class
+smartrics/iotics/identity/Identity.class
+smartrics/iotics/identity/jna/SdkApi.class
+smartrics/iotics/identity/go/StringResult.class
