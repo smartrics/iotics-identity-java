@@ -6,7 +6,7 @@
 
   <groupId>smartrics.iotics</groupId>
   <artifactId>iotics-identity-java</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2</version>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -226,10 +226,8 @@
                 <configuration>
                   <!-- Prevent gpg from using pinentry programs. Fixes: gpg: signing
                       failed: Inappropriate ioctl for device -->
-                  <configuration>
-                    <keyname>${gpg.keyname}</keyname>
-                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
-                  </configuration>
+                  <keyname>${gpg.keyname}</keyname>
+                  <passphraseServerId>${gpg.keyname}</passphraseServerId>
                   <gpgArguments>
                     <arg>--pinentry-mode</arg>
                     <arg>loopback</arg>
