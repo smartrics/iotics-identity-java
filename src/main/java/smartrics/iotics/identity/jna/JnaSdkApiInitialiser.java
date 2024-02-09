@@ -31,6 +31,14 @@ public class JnaSdkApiInitialiser {
      * Initialiser with path to the native set to LIB_PATH
      */
     public JnaSdkApiInitialiser() {
+        String path = System.getProperty("ioticsIdentityLibraryFile");
+        if(path != null) {
+            try {
+                this.idProxy = Native.loadLibrary(path, SdkApi.class);
+            } catch(UnsatisfiedLinkError e) {
+                throw new IllegalStateException("unable to load library from path supplied in -DioticsIdentityLibraryFile");
+            }
+        }
         try {
             this.idProxy = Native.loadLibrary(LIB_NAME, SdkApi.class);
         } catch(UnsatisfiedLinkError e) {
