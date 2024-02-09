@@ -9,7 +9,20 @@ import java.io.File;
  * Native library loader
  */
 public class JnaSdkApiInitialiser {
-    private static String LIB_NAME = "lib-iotics-id-sdk.so";
+    private static final String LIB_NAME;
+    static {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+            LIB_NAME = "lib-iotics-id-sdk.dll";
+        } else if (osName.contains("mac")) {
+            LIB_NAME = "lib-iotics-id-sdk.dylib";
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            LIB_NAME = "lib-iotics-id-sdk.so";
+        } else {
+            throw new UnsupportedOperationException("Unsupported operating system: " + osName);
+        }
+
+    }
     private static String LIB_PATH = new File("./lib/"+LIB_NAME).getAbsolutePath();
 
     private SdkApi idProxy;
