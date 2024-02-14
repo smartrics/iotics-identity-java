@@ -117,7 +117,7 @@ public class SimpleIdentity {
     }
 
     /**
-     * Makes an user identity. If the identity exists it's recreated and the existing delegations wiped out.
+     * Makes a user identity. If the identity exists it's recreated and the existing delegations wiped out.
      *
      * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
      * @param name    the identifier of the public key in the did document
@@ -181,7 +181,7 @@ public class SimpleIdentity {
 
     /**
      * Creates an authentication delegation from this user to this agent.
-     * It assumes secrets for user and agent are avaliable in this context
+     * It assumes secrets for user and agent are available in this context
      *
      * @param agentId        the identity of the agent
      * @param userId         the identity of the user
@@ -196,7 +196,7 @@ public class SimpleIdentity {
 
     /**
      * Creates a control delegation from this twin to this agent.
-     * It assumes secrets for user and agent are avaliable in this context
+     * It assumes secrets for user and agent are available in this context
      *
      * @param agentId        the identity of the agent
      * @param twinId         the identity of the twin
