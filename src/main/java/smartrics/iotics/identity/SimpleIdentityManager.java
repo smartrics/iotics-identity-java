@@ -38,14 +38,21 @@ public class SimpleIdentityManager implements IdentityManager {
     }
 
     @Override
-    public Identity newTwinIdentity(String twinKeyName, String controlDelegationID) {
+    public Identity newTwinIdentityWithControlDelegation(String twinKeyName, String controlDelegationID) {
         return idSdk.CreateTwinIdentityWithControlDelegation(this.agentIdentity, twinKeyName, controlDelegationID);
     }
 
+    @Override
+    public Identity newTwinIdentity(String twinKeyName, String twinKeyID) {
+        return idSdk.CreateTwinIdentity(twinKeyName, twinKeyID);
+    }
+
+    @Override
     public Identity agentIdentity() {
         return agentIdentity;
     }
 
+    @Override
     public Identity userIdentity() {
         return userIdentity;
     }

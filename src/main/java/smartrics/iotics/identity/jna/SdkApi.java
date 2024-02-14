@@ -20,6 +20,12 @@ public interface SdkApi extends Library {
             String name,
             String seed);
 
+    StringResult RecreateTwinIdentity(
+            String resolverAddress,
+            String keyName,
+            String name,
+            String seed);
+
     StringResult RecreateUserIdentity(
             String resolverAddress,
             String keyName,
@@ -27,6 +33,12 @@ public interface SdkApi extends Library {
             String seed);
 
     StringResult CreateAgentIdentity(
+            String resolverAddress,
+            String keyName,
+            String name,
+            String seed);
+
+    StringResult CreateTwinIdentity(
             String resolverAddress,
             String keyName,
             String name,

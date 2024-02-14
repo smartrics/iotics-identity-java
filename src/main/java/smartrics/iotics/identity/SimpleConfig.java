@@ -7,27 +7,37 @@ import com.google.gson.Gson;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Objects of this class can be used by clients to load identitconfig
+ */
 public class SimpleConfig {
 
     private String seed;
     private String keyName;
 
+    /**
+     * This method reads the config from the env. The var name
+     * is obtained by conctatenating a prefix with the word "SEED" for the seed, and the word "KEYNAME" for the keyname
+     * @param prefix a prefix for the env variables being read to get values for this config.
+     * @return
+     */
     public static SimpleConfig fromEnv(String prefix) {
         return new SimpleConfig(System.getenv(prefix + "SEED"), System.getenv(prefix + "KEYNAME"));
     }
 
     public static SimpleConfig readConf(Path p) throws FileNotFoundException {
         Gson gson = new Gson();
-        Reader reader = Files.newReader(p.toFile(), Charset.forName("UTF-8"));
+        Reader reader = Files.newReader(p.toFile(), StandardCharsets.UTF_8);
         return gson.fromJson(reader, SimpleConfig.class);
     }
     public static SimpleConfig readConf(String path, SimpleConfig def) {
         if (path == null){
             if(def == null) {
-                throw new IllegalArgumentException("null default");
+                throw new IllegalArgumentException("null path and null default");
             }
             return def;
         }
@@ -37,23 +47,30 @@ public class SimpleConfig {
     public static SimpleConfig readConf(Path p, SimpleConfig def) {
         try {
             Gson gson = new Gson();
-            Reader reader = Files.newReader(p.toFile(), Charset.forName("UTF-8"));
+            Reader reader = Files.newReader(p.toFile(), StandardCharsets.UTF_8);
             SimpleConfig sc = gson.fromJson(reader, SimpleConfig.class);
             if(sc == null) {
                 if(def == null) {
-                    throw new IllegalArgumentException("null default");
+                    throw new IllegalArgumentException("config at path not available and null default");
                 }
                 return def;
             }
             return sc.cloneWithDefaults(def);
         } catch (FileNotFoundException e) {
             if(def == null) {
-                throw new IllegalArgumentException("null default");
+                throw new IllegalArgumentException("file not found and null default");
             }
             return def;
         }
     }
 
+    /**
+     * Reads the config from a file in ${user.home}/.config/iotics/{name}
+     *
+     * @param name the config file name
+     * @return
+     * @throws FileNotFoundException
+     */
     public static SimpleConfig readConfFromHome(String name) throws FileNotFoundException {
         Path p = Paths.get(System.getProperty("user.home"), ".config", "iotics", name);
         return readConf(p);

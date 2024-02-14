@@ -26,7 +26,8 @@ public class SimpleIdentity {
     /**
      * Abstraction over the library interface with added validation and high level data bags. This abstraction provides
      * access to the basic high level functionality of the
-     * @param api the api proxy
+     *
+     * @param api             the api proxy
      * @param resolverAddress
      */
     public SimpleIdentity(SdkApi api, String resolverAddress) {
@@ -38,10 +39,10 @@ public class SimpleIdentity {
     }
 
     /**
-     * @param api the proxy to the library interface
+     * @param api             the proxy to the library interface
      * @param resolverAddress the https url of the resolver
-     * @param userSeed the user seed
-     * @param agentSeed the agent seed
+     * @param userSeed        the user seed
+     * @param agentSeed       the agent seed
      */
     public SimpleIdentity(SdkApi api, String resolverAddress, String userSeed, String agentSeed) {
         this.api = Objects.requireNonNull(api);
@@ -57,8 +58,9 @@ public class SimpleIdentity {
 
     /**
      * Makes an agent identity. If the identity exists it's returned.
+     *
      * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
-     * @param name the identifier of the public key in the did document
+     * @param name    the identifier of the public key in the did document
      * @return the identity data
      */
     public Identity CreateAgentIdentity(String keyName, String name) {
@@ -68,8 +70,9 @@ public class SimpleIdentity {
 
     /**
      * Makes an agent identity. If the identity exists it's recreated and the existing delegations wiped out.
+     *
      * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
-     * @param name the identifier of the public key in the did document
+     * @param name    the identifier of the public key in the did document
      * @return the identity data
      */
     public Identity RecreateAgentIdentity(String keyName, String name) {
@@ -78,9 +81,34 @@ public class SimpleIdentity {
     }
 
     /**
-     * Makes a user identity. If the identity exists it's returned.
+     * Makes a twin identity. If the identity exists it's returned.
+     *
      * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
-     * @param name the identifier of the public key in the did document
+     * @param name    the identifier of the public key in the did document
+     * @return the identity data
+     */
+    public Identity CreateTwinIdentity(String keyName, String name) {
+        String did = getValueOrThrow(api.CreateTwinIdentity(resolverAddress.toString(), keyName, name, agentSeed));
+        return new Identity(keyName, name, did);
+    }
+
+    /**
+     * Makes a twin identity. If the identity exists it's recreated and the existing delegations wiped out.
+     *
+     * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
+     * @param name    the identifier of the public key in the did document
+     * @return the identity data
+     */
+    public Identity RecreateTwinIdentity(String keyName, String name) {
+        String did = getValueOrThrow(api.RecreateTwinIdentity(resolverAddress.toString(), keyName, name, agentSeed));
+        return new Identity(keyName, name, did);
+    }
+
+    /**
+     * Makes a user identity. If the identity exists it's returned.
+     *
+     * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
+     * @param name    the identifier of the public key in the did document
      * @return the identity data
      */
     public Identity CreateUserIdentity(String keyName, String name) {
@@ -90,8 +118,9 @@ public class SimpleIdentity {
 
     /**
      * Makes an user identity. If the identity exists it's recreated and the existing delegations wiped out.
+     *
      * @param keyName the key name for this identity, used as passphrase to create the hash of the key from seed
-     * @param name the identifier of the public key in the did document
+     * @param name    the identifier of the public key in the did document
      * @return the identity data
      */
     public Identity RecreateUserIdentity(String keyName, String name) {
@@ -100,10 +129,11 @@ public class SimpleIdentity {
     }
 
     /**
-     * Creates a new twin and automtaiccally sets the control delegation for this agent identity.
-     * @param agentIdentity
-     * @param twinKeyName the key name for this identity, used as passphrase to create the hash of the key from seed
-     * @param twinName the identifier of the public key in the did document
+     * Creates a new twin and automatically sets the control delegation for this agent identity.
+     *
+     * @param agentIdentity the agent identity that receives the control delegation
+     * @param twinKeyName   the key name for this identity, used as passphrase to create the hash of the key from seed
+     * @param twinName      the identifier of the public key in the did document
      * @return the new twin identity
      */
     public Identity CreateTwinIdentityWithControlDelegation(Identity agentIdentity, String twinKeyName, String twinName) {
@@ -114,9 +144,9 @@ public class SimpleIdentity {
 
     /**
      * @param agentIdentity the agent needing the token
-     * @param userDid the user that the agent claims it's authorising this request
-     * @param audience the purpose of this token
-     * @param duration validity of this token
+     * @param userDid       the user that the agent claims it's authorising this request
+     * @param audience      the purpose of this token
+     * @param duration      validity of this token
      * @return JWT token usable as claim for this agent
      */
     public String CreateAgentAuthToken(Identity agentIdentity, String userDid, String audience, Duration duration) {
@@ -128,8 +158,8 @@ public class SimpleIdentity {
      * Uses a default audience.
      *
      * @param agentIdentity the agent needing the token
-     * @param userDid the user that the agent claims it's authorising this request
-     * @param duration validity of this token
+     * @param userDid       the user that the agent claims it's authorising this request
+     * @param duration      validity of this token
      * @return JWT token usable as claim for this agent
      */
     public String CreateAgentAuthToken(Identity agentIdentity, String userDid, Duration duration) {
@@ -152,8 +182,9 @@ public class SimpleIdentity {
     /**
      * Creates an authentication delegation from this user to this agent.
      * It assumes secrets for user and agent are avaliable in this context
-     * @param agentId the identity of the agent
-     * @param userId the identity of the user
+     *
+     * @param agentId        the identity of the agent
+     * @param userId         the identity of the user
      * @param delegationName the delegation name
      */
     public void UserDelegatesAuthenticationToAgent(Identity agentId, Identity userId, String delegationName) {
@@ -166,8 +197,9 @@ public class SimpleIdentity {
     /**
      * Creates a control delegation from this twin to this agent.
      * It assumes secrets for user and agent are avaliable in this context
-     * @param agentId the identity of the agent
-     * @param twinId the identity of the twin
+     *
+     * @param agentId        the identity of the agent
+     * @param twinId         the identity of the twin
      * @param delegationName the delegation name
      */
     public void TwinDelegatesControlToAgent(Identity agentId, Identity twinId, String delegationName) {
@@ -182,6 +214,10 @@ public class SimpleIdentity {
 
     String getUserSeed() {
         return userSeed;
+    }
+
+    public HttpResolverClient resolverClient() {
+        return resolverClient;
     }
 
     public URL getResolverAddress() {

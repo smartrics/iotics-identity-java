@@ -61,9 +61,9 @@ public final class HttpResolverClient implements ResolverClient {
     }
 
     public static void main(String[] args) throws Exception {
-        HttpResolverClient c = new HttpResolverClient(URI.create("https://did.stg.iotics.com").toURL());
-        Result agent = c.discover("did:iotics:iotJxn2AHBkaFXKkBymbFYcVokGhLShLtUf1");
-        Result user = c.discover("did:iotics:iotLUmwHDFtpfLEWTeGAQwyp4Y5FoSTt4jbg");
+        HttpResolverClient c = new HttpResolverClient(URI.create(args[0]).toURL());
+        Result agent = c.discover(args[1]);
+        Result user = c.discover(args[2]);
 
         System.out.println("AGENT ------");
         System.out.println(agent);
