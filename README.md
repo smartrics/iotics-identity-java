@@ -32,42 +32,42 @@ Usages: see also `src/test/java/smartrics/iotics/identity/App.java`
 
 ```java
 
-    // Generate seeds
-    public static void seeds(SdkApi api) {
+// Generate seeds
+public static void seeds(SdkApi api) {
 
-        Seeds seeds = new Seeds(api);
+    Seeds seeds = new Seeds(api);
 
-        String res;
+    String res;
 
-        res = seeds.CreateDefaultSeed();
-        System.out.println("CreateDefaultSeed: " + res);
+    res = seeds.CreateDefaultSeed();
+    System.out.println("CreateDefaultSeed: " + res);
 
-        res = seeds.SeedBip39ToMnemonic(res);
-        System.out.println("SeedBip39ToMnemonic: " + res);
+    res = seeds.SeedBip39ToMnemonic(res);
+    System.out.println("SeedBip39ToMnemonic: " + res);
 
-        res = seeds.MnemonicBip39ToSeed(res);
-        System.out.println("MnemonicBip39ToSeed: " + res);
-    }
+    res = seeds.MnemonicBip39ToSeed(res);
+    System.out.println("MnemonicBip39ToSeed: " + res);
+}
 
-    // Generate identities
-    public static void identities(SdkApi api) {
-        SimpleIdentity idSdk = new SimpleIdentity(api, resolver, seed);
+// Generate identities
+public static void identities(SdkApi api) {
+    SimpleIdentity idSdk = new SimpleIdentity(api, resolver, seed);
 
-        Identity agentIdentity = idSdk.CreateAgentIdentity("aKey1", "#app1");
-        System.out.println("CreateAgentIdentity: " + agentIdentity );
+    Identity agentIdentity = idSdk.CreateAgentIdentity("aKey1", "#app1");
+    System.out.println("CreateAgentIdentity: " + agentIdentity);
 
-        Identity userIdentity = idSdk.CreateUserIdentity("uKey1", "#user1");
-        System.out.println("CreateUserIdentity: " + userIdentity);
+    Identity userIdentity = idSdk.CreateUserIdentity("uKey1", "#user1");
+    System.out.println("CreateUserIdentity: " + userIdentity);
 
-        Identity twinIdentity = idSdk.CreateTwinIdentityWithControlDelegation(agentIdentity, "tKey1", "#tName");
-        System.out.println("CreateTwinDidWithControlDelegation: " + twinIdentity);
-    }
+    Identity twinIdentity = idSdk.CreateTwinIdentityWithControlDelegation(agentIdentity, "tKey1", "#tName");
+    System.out.println("CreateTwinDidWithControlDelegation: " + twinIdentity);
+}
 
-    // Generate an authentication token
-    public static void token(SdkApi api) {
-        SimpleIdentity idSdk = new SimpleIdentity(api, resolver, seed);
-        String token = idSdk.CreateAgentAuthToken(agentIdentity, uDiD, Duration.ofHours(10));
-        System.out.println("CreateAgentAuthToken: " + token);
-    }
+// Generate an authentication token
+public static void token(SdkApi api) {
+    SimpleIdentity idSdk = new SimpleIdentity(api, resolver, seed);
+    String token = idSdk.CreateAgentAuthToken(agentIdentity, uDiD, Duration.ofHours(10));
+    System.out.println("CreateAgentAuthToken: " + token);
+}
 
 ```

@@ -21,7 +21,7 @@ public class SimpleIdentityManager implements IdentityManager {
                                   String agentKeyName, String agentKeyID,
                                   String authDelegationID) {
         SdkApi api = new JnaSdkApiInitialiser().get();
-        idSdk = new SimpleIdentity(api, resolverAddress , userSeed, agentSeed);
+        idSdk = new SimpleIdentity(api, resolverAddress, userSeed, agentSeed);
         userIdentity = idSdk.CreateUserIdentity(userKeyName, userKeyID);
         agentIdentity = idSdk.CreateAgentIdentity(agentKeyName, agentKeyID);
         idSdk.UserDelegatesAuthenticationToAgent(agentIdentity, userIdentity, authDelegationID);

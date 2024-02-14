@@ -10,6 +10,7 @@ import java.io.File;
  */
 public class JnaSdkApiInitialiser {
     private static final String LIB_NAME;
+
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
@@ -23,7 +24,8 @@ public class JnaSdkApiInitialiser {
         }
 
     }
-    private static String LIB_PATH = new File("./lib/"+LIB_NAME).getAbsolutePath();
+
+    private static String LIB_PATH = new File("./lib/" + LIB_NAME).getAbsolutePath();
 
     private SdkApi idProxy;
 
@@ -32,16 +34,16 @@ public class JnaSdkApiInitialiser {
      */
     public JnaSdkApiInitialiser() {
         String path = System.getProperty("ioticsIdentityLibraryFile");
-        if(path != null) {
+        if (path != null) {
             try {
                 this.idProxy = Native.loadLibrary(path, SdkApi.class);
-            } catch(UnsatisfiedLinkError e) {
+            } catch (UnsatisfiedLinkError e) {
                 throw new IllegalStateException("unable to load library from path supplied in -DioticsIdentityLibraryFile");
             }
         }
         try {
             this.idProxy = Native.loadLibrary(LIB_NAME, SdkApi.class);
-        } catch(UnsatisfiedLinkError e) {
+        } catch (UnsatisfiedLinkError e) {
             this.idProxy = Native.loadLibrary(LIB_PATH, SdkApi.class);
         }
     }

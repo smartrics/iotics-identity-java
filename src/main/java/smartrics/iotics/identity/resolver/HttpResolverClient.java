@@ -36,18 +36,17 @@ public final class HttpResolverClient implements ResolverClient {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             ResponseBody body = response.body();
-            if(response.code() > 299) {
-                if(response.code() == 404) {
+            if (response.code() > 299) {
+                if (response.code() == 404) {
                     return new Result("DID not found", "application/text", true);
                 }
-                if(body != null) {
+                if (body != null) {
                     return new Result(body.string(), "application/xml", true);
-                }
-                else {
+                } else {
                     return new Result("No result found", "application/text", true);
                 }
             }
-            if(body == null) {
+            if (body == null) {
                 return new Result("invalid response", "application/text", true);
             }
             String bodyString = body.string();

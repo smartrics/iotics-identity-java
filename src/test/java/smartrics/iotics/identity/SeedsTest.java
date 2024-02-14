@@ -1,13 +1,13 @@
 package smartrics.iotics.identity;
 
-import smartrics.iotics.identity.jna.SdkApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import smartrics.iotics.identity.jna.SdkApi;
 
-import static smartrics.iotics.identity.DataFactory.validResult;
 import static org.mockito.Mockito.*;
+import static smartrics.iotics.identity.DataFactory.validResult;
 
 @ExtendWith(MockitoExtension.class)
 public class SeedsTest {
@@ -24,7 +24,7 @@ public class SeedsTest {
     @Test
     void whenMnemonicBip39ToSeed_thenDelegatesToApi() {
         when(sdkApi.MnemonicBip39ToSeed(any())).thenReturn(validResult("some seed"));
-        new Seeds(sdkApi).MnemonicBip39ToSeed ("1 2 3");
+        new Seeds(sdkApi).MnemonicBip39ToSeed("1 2 3");
         verify(sdkApi).MnemonicBip39ToSeed("1 2 3");
     }
 

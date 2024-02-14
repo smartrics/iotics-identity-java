@@ -15,15 +15,14 @@ public interface IdentityManager {
     String newAuthenticationToken(Duration expiry);
 
     /**
-     * @param expiry the expiry time of this token
+     * @param expiry   the expiry time of this token
      * @param audience the specific audience this token is for
      * @return a new authentication token
      */
     String newAuthenticationToken(Duration expiry, String audience);
 
     /**
-     *
-     * @param twinKeyName the master key name for this twin identity
+     * @param twinKeyName         the master key name for this twin identity
      * @param controlDelegationID the name of the delegation
      * @return a new twin identity with control delegation for this agent
      */
@@ -34,9 +33,8 @@ public interface IdentityManager {
     }
 
     /**
-     *
      * @param twinKeyName the key name
-     * @param twinKeyID key ID (must start with #)
+     * @param twinKeyID   key ID (must start with #)
      * @return a new twin identity
      */
     Identity newTwinIdentity(String twinKeyName, String twinKeyID);
@@ -47,7 +45,6 @@ public interface IdentityManager {
     Identity agentIdentity();
 
     /**
-     *
      * @return the user identity
      */
     Identity userIdentity();

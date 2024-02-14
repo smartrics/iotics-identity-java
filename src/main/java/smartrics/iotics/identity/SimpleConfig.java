@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +21,7 @@ public class SimpleConfig {
     /**
      * This method reads the config from the env. The var name
      * is obtained by conctatenating a prefix with the word "SEED" for the seed, and the word "KEYNAME" for the keyname
+     *
      * @param prefix a prefix for the env variables being read to get values for this config.
      * @return
      */
@@ -34,9 +34,10 @@ public class SimpleConfig {
         Reader reader = Files.newReader(p.toFile(), StandardCharsets.UTF_8);
         return gson.fromJson(reader, SimpleConfig.class);
     }
+
     public static SimpleConfig readConf(String path, SimpleConfig def) {
-        if (path == null){
-            if(def == null) {
+        if (path == null) {
+            if (def == null) {
                 throw new IllegalArgumentException("null path and null default");
             }
             return def;
@@ -49,15 +50,15 @@ public class SimpleConfig {
             Gson gson = new Gson();
             Reader reader = Files.newReader(p.toFile(), StandardCharsets.UTF_8);
             SimpleConfig sc = gson.fromJson(reader, SimpleConfig.class);
-            if(sc == null) {
-                if(def == null) {
+            if (sc == null) {
+                if (def == null) {
                     throw new IllegalArgumentException("config at path not available and null default");
                 }
                 return def;
             }
             return sc.cloneWithDefaults(def);
         } catch (FileNotFoundException e) {
-            if(def == null) {
+            if (def == null) {
                 throw new IllegalArgumentException("file not found and null default");
             }
             return def;
@@ -90,18 +91,18 @@ public class SimpleConfig {
     }
 
     public boolean isValid() {
-        return !Strings.isNullOrEmpty(this.seed) && !Strings.isNullOrEmpty(this.keyName) ;
+        return !Strings.isNullOrEmpty(this.seed) && !Strings.isNullOrEmpty(this.keyName);
     }
 
     private SimpleConfig cloneWithDefaults(SimpleConfig def) {
         SimpleConfig sc = new SimpleConfig(this.seed, this.keyName);
-        if(sc.seed == null) {
+        if (sc.seed == null) {
             sc.seed = def.seed;
         }
-        if(sc.keyName == null) {
+        if (sc.keyName == null) {
             sc.keyName = def.keyName;
         }
-        if(!sc.isValid()) {
+        if (!sc.isValid()) {
             throw new IllegalArgumentException("invalid configuration");
         }
         return sc;

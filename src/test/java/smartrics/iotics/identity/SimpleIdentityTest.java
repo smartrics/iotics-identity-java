@@ -1,17 +1,17 @@
 package smartrics.iotics.identity;
 
-import smartrics.iotics.identity.jna.SdkApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import smartrics.iotics.identity.jna.SdkApi;
 
 import java.time.Duration;
 
-import static smartrics.iotics.identity.DataFactory.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static smartrics.iotics.identity.DataFactory.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SimpleIdentityTest {
@@ -85,7 +85,7 @@ public class SimpleIdentityTest {
         assertEquals(agentIdentity.did(), "agent did");
         assertEquals(agentIdentity.keyName(), "agentKeyName");
         assertEquals(agentIdentity.name(), "agentName");
-        verify(sdkApi).RecreateAgentIdentity(res,  "agentKeyName",  "agentName", "some seed");
+        verify(sdkApi).RecreateAgentIdentity(res, "agentKeyName", "agentName", "some seed");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class SimpleIdentityTest {
         assertEquals(agentIdentity.did(), "agent did");
         assertEquals(agentIdentity.keyName(), "agentKeyName");
         assertEquals(agentIdentity.name(), "agentName");
-        verify(sdkApi).CreateAgentIdentity(res,  "agentKeyName",  "agentName", "some seed");
+        verify(sdkApi).CreateAgentIdentity(res, "agentKeyName", "agentName", "some seed");
     }
 
     @Test
@@ -128,7 +128,7 @@ public class SimpleIdentityTest {
         assertEquals(userIdentity.did(), "user did");
         assertEquals(userIdentity.keyName(), "userKeyName");
         assertEquals(userIdentity.name(), "userName");
-        verify(sdkApi).RecreateUserIdentity(res,  "userKeyName",  "userName", "some seed");
+        verify(sdkApi).RecreateUserIdentity(res, "userKeyName", "userName", "some seed");
     }
 
     @Test
@@ -143,7 +143,7 @@ public class SimpleIdentityTest {
         assertEquals(userIdentity.did(), "user did");
         assertEquals(userIdentity.keyName(), "userKeyName");
         assertEquals(userIdentity.name(), "userName");
-        verify(sdkApi).CreateUserIdentity(res,  "userKeyName",  "userName", "some seed");
+        verify(sdkApi).CreateUserIdentity(res, "userKeyName", "userName", "some seed");
     }
 
     @Test
@@ -167,7 +167,7 @@ public class SimpleIdentityTest {
         String token = si.CreateAgentAuthToken(i, "did:iotics:user", "aud", Duration.ofSeconds(123));
 
         assertEquals(token, "some token");
-        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", "aud", Integer.valueOf(123));
+        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(), i.name(), si.getAgentSeed(), "did:iotics:user", "aud", Integer.valueOf(123));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class SimpleIdentityTest {
         String token = si.CreateAgentAuthToken(i, "did:iotics:user", Duration.ofSeconds(123));
 
         assertEquals(token, "some token");
-        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(),  i.name(), si.getAgentSeed(), "did:iotics:user", res, Integer.valueOf(123));
+        verify(sdkApi).CreateAgentAuthToken(i.did(), i.keyName(), i.name(), si.getAgentSeed(), "did:iotics:user", res, Integer.valueOf(123));
     }
 
     @Test
@@ -196,8 +196,8 @@ public class SimpleIdentityTest {
         si.UserDelegatesAuthenticationToAgent(i, u, "#foobar");
 
         verify(sdkApi).UserDelegatesAuthenticationToAgent(res,
-                i.did(), i.keyName(),  i.name(), si.getAgentSeed(),
-                u.did(), u.keyName(),  u.name(), si.getUserSeed(),
+                i.did(), i.keyName(), i.name(), si.getAgentSeed(),
+                u.did(), u.keyName(), u.name(), si.getUserSeed(),
                 "#foobar");
     }
 
@@ -213,8 +213,8 @@ public class SimpleIdentityTest {
         si.TwinDelegatesControlToAgent(i, u, "#foobar");
 
         verify(sdkApi).TwinDelegatesControlToAgent(res,
-                i.did(), i.keyName(),  i.name(), si.getAgentSeed(),
-                u.did(), u.keyName(),  u.name(), si.getAgentSeed(),
+                i.did(), i.keyName(), i.name(), si.getAgentSeed(),
+                u.did(), u.keyName(), u.name(), si.getAgentSeed(),
                 "#foobar");
     }
 

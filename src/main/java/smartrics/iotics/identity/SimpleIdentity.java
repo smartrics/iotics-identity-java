@@ -28,7 +28,7 @@ public class SimpleIdentity {
      * access to the basic high level functionality of the
      *
      * @param api             the api proxy
-     * @param resolverAddress
+     * @param resolverAddress the resolver address
      */
     public SimpleIdentity(SdkApi api, String resolverAddress) {
         this(api, resolverAddress, getValueOrThrow(api.CreateDefaultSeed()));
