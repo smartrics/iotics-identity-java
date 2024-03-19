@@ -13,10 +13,20 @@ public class JWT {
     private final String header;
     private final String signature;
     private final String payload;
-    private final String token;
+
+    public String header() {
+        return header;
+    }
+
+    public String signature() {
+        return signature;
+    }
+
+    public String payload() {
+        return payload;
+    }
 
     public JWT(String token) {
-        this.token = token;
         String[] chunks = token.split("\\.");
         Base64.Decoder decoder = Base64.getDecoder();
 
@@ -24,8 +34,8 @@ public class JWT {
             this.header = new String(decoder.decode(chunks[0]));
             this.payload = new String(decoder.decode(chunks[1]));
             this.signature = chunks[2];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new IllegalArgumentException("Invalid JWT token");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JWT token", e);
         }
     }
 

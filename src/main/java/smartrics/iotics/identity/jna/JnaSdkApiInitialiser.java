@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Native library loader
  */
-public class JnaSdkApiInitialiser {
+public class JnaSdkApiInitialiser implements SdkApiInitialiser {
     private static final String LIB_NAME;
 
     static {
@@ -63,6 +63,7 @@ public class JnaSdkApiInitialiser {
      *
      * @return the library interface
      */
+    @Override
     public final SdkApi get() {
         return idProxy;
     }
