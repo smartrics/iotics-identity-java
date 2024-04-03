@@ -48,4 +48,19 @@ public interface IdentityManager {
      * @return the user identity
      */
     Identity userIdentity();
+
+    /**
+     * @return the agent identity document as a JSON string
+     */
+    DocumentResult agentIdentityDocument();
+
+    /**
+     * @return the user identity document as a JSON string
+     */
+    DocumentResult userIdentityDocument();
+
+    /**
+     * @return the twin identity document as a JSON string
+     */
+    DocumentResult twinIdentityDocument(String did);
 }

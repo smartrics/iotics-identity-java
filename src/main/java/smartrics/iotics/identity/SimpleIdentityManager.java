@@ -3,7 +3,9 @@ package smartrics.iotics.identity;
 
 import smartrics.iotics.identity.jna.JnaSdkApiInitialiser;
 import smartrics.iotics.identity.jna.SdkApi;
+import smartrics.iotics.identity.resolver.ResolverClient;
 
+import java.io.IOException;
 import java.time.Duration;
 
 /**
@@ -55,6 +57,33 @@ public class SimpleIdentityManager implements IdentityManager {
     @Override
     public Identity userIdentity() {
         return userIdentity;
+    }
+
+    @Override
+    public DocumentResult agentIdentityDocument() {
+        return fetch(agentIdentity().did());
+    }
+
+    @Override
+    public DocumentResult userIdentityDocument() {
+        return fetch(userIdentity().did());
+    }
+
+    @Override
+    public DocumentResult twinIdentityDocument(String did) {
+        return fetch(did);
+    }
+
+    private DocumentResult fetch(String did) {
+        try {
+            ResolverClient.Result result = idSdk.resolverClient().discover(did);
+            if(result.isErr()) {
+                return new DocumentResult(null, result.content());
+            }
+            return new DocumentResult(result.content(), null);
+        } catch (IOException e) {
+            return new DocumentResult(null, e.getMessage());
+        }
     }
 
     public static final class Builder {

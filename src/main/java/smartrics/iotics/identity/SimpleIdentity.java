@@ -3,11 +3,13 @@ package smartrics.iotics.identity;
 import smartrics.iotics.identity.jna.SdkApi;
 import smartrics.iotics.identity.resolver.HttpResolverClient;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Optional;
 
 import static smartrics.iotics.identity.Validator.getValueOrThrow;
 import static smartrics.iotics.identity.Validator.throwIfNotNull;
