@@ -9,24 +9,37 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Objects of this class can be used by clients to load identitconfig
  */
-public class SimpleConfig {
+public record SimpleConfig(String seed, String keyName, String keyId) {
 
-    private String seed;
-    private String keyName;
+    public SimpleConfig(String seed, String keyName) {
+        this(seed, requireNonNull(keyName), null);
+    }
+
+    public SimpleConfig(String seed, String keyName, String keyId) {
+        this.seed = requireNonNull(seed);
+        this.keyName = requireNonNull(keyName);
+        this.keyId = Optional.ofNullable(keyId).orElse("#id-" + keyName.hashCode());
+    }
 
     /**
      * This method reads the config from the env. The var name
-     * is obtained by conctatenating a prefix with the word "SEED" for the seed, and the word "KEYNAME" for the keyname
+     * is obtained by concatenating a prefix with the word "SEED" for the seed, and the word "KEYNAME" for the keyname
      *
      * @param prefix a prefix for the env variables being read to get values for this config.
-     * @return
+     * @return the config
      */
     public static SimpleConfig fromEnv(String prefix) {
-        return new SimpleConfig(System.getenv(prefix + "SEED"), System.getenv(prefix + "KEYNAME"));
+        return new SimpleConfig(
+                System.getenv(prefix + "SEED"),
+                System.getenv(prefix + "KEYNAME"),
+                System.getenv(prefix + "KEYID"));
     }
 
     public static SimpleConfig readConf(Path p) throws FileNotFoundException {
@@ -35,51 +48,16 @@ public class SimpleConfig {
         return gson.fromJson(reader, SimpleConfig.class);
     }
 
-    public static SimpleConfig readConf(String path, SimpleConfig def) {
-        if (path == null) {
-            if (def == null) {
-                throw new IllegalArgumentException("null path and null default");
-            }
-            return def;
-        }
-        return SimpleConfig.readConf(Path.of(path), def);
-    }
-
-    public static SimpleConfig readConf(Path p, SimpleConfig def) {
-        try {
-            Gson gson = new Gson();
-            Reader reader = Files.newReader(p.toFile(), StandardCharsets.UTF_8);
-            SimpleConfig sc = gson.fromJson(reader, SimpleConfig.class);
-            if (sc == null) {
-                if (def == null) {
-                    throw new IllegalArgumentException("config at path not available and null default");
-                }
-                return def;
-            }
-            return sc.cloneWithDefaults(def);
-        } catch (FileNotFoundException e) {
-            if (def == null) {
-                throw new IllegalArgumentException("file not found and null default");
-            }
-            return def;
-        }
-    }
-
     /**
      * Reads the config from a file in ${user.home}/.config/iotics/{name}
      *
      * @param name the config file name
-     * @return
-     * @throws FileNotFoundException
+     * @return the config
+     * @throws FileNotFoundException if file not found
      */
     public static SimpleConfig readConfFromHome(String name) throws FileNotFoundException {
         Path p = Paths.get(System.getProperty("user.home"), ".config", "iotics", name);
         return readConf(p);
-    }
-
-    public SimpleConfig(String seed, String keyName) {
-        this.seed = seed;
-        this.keyName = keyName;
     }
 
     public String seed() {
@@ -90,21 +68,12 @@ public class SimpleConfig {
         return keyName;
     }
 
-    public boolean isValid() {
-        return !Strings.isNullOrEmpty(this.seed) && !Strings.isNullOrEmpty(this.keyName);
+    public String keyId() {
+        return keyId;
     }
 
-    private SimpleConfig cloneWithDefaults(SimpleConfig def) {
-        SimpleConfig sc = new SimpleConfig(this.seed, this.keyName);
-        if (sc.seed == null) {
-            sc.seed = def.seed;
-        }
-        if (sc.keyName == null) {
-            sc.keyName = def.keyName;
-        }
-        if (!sc.isValid()) {
-            throw new IllegalArgumentException("invalid configuration");
-        }
-        return sc;
+    public boolean isValid() {
+        return !Strings.isNullOrEmpty(this.seed) && !Strings.isNullOrEmpty(this.keyName) && !Strings.isNullOrEmpty(this.keyId);
     }
+
 }
