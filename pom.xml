@@ -7,7 +7,7 @@
 
     <groupId>smartrics.iotics</groupId>
     <artifactId>iotics-identity-java</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -16,8 +16,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <licenses>
@@ -80,15 +80,15 @@
             <version>4.12.0</version>
         </dependency>
         <dependency>
-            <!-- overrides the transitive dep on bitcoinj-core with CEV issues -->
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-javalite</artifactId>
-            <version>3.19.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>0.16.2</version>
+        </dependency>
+        <dependency>
+            <!--  overrides the transitive dep on bitcoinj-core with CEV issues  -->
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-javalite</artifactId>
+            <version>3.19.6</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15to18
         needed to eliminate the CEV on bitcoinj-core -->
@@ -117,8 +117,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>

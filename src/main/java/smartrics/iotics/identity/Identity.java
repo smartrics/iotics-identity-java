@@ -5,32 +5,12 @@ import java.util.Objects;
 /**
  * Simple data bag for most frequent identity data.
  */
-public final class Identity {
+public record Identity(String keyName, String name, String did) {
 
-    private final String name;
-    private final String keyName;
-    private final String did;
-
-    public Identity(String keyName, String name, String did) {
+    public Identity {
         Objects.requireNonNull(name);
         Objects.requireNonNull(keyName);
         Objects.requireNonNull(did);
-        this.name = name;
-        this.keyName = keyName;
-        this.did = did;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Identity identity = (Identity) o;
-        return Objects.equals(name, identity.name) && Objects.equals(keyName, identity.keyName) && Objects.equals(did, identity.did);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, keyName, did);
     }
 
     @Override
@@ -40,17 +20,5 @@ public final class Identity {
                 ", keyName='" + keyName + '\'' +
                 ", did='" + did + '\'' +
                 '}';
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String keyName() {
-        return keyName;
-    }
-
-    public String did() {
-        return did;
     }
 }
