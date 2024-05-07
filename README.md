@@ -1,3 +1,5 @@
+_This project is now deprecated and superseeded by [iotics4j](https://github.com/smartrics/iotics4j) _
+
 # Java wrapper for the ID SDK
 
 IOTICS ID Library - Java wrapper using JNA over ffi
